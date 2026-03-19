@@ -70,6 +70,18 @@ Open it at:
 http://127.0.0.1:8888
 ```
 
+## Verify ROCm Access
+
+After JupyterLab starts, run the following in a notebook to confirm that PyTorch can access the ROCm device:
+
+```python
+import torch
+print(torch.cuda.is_available())
+print(torch.cuda.get_device_name(0))
+```
+
+The first call should return `True`, and the second should print the name of your AMD GPU.
+
 ## Security Note
 
 This setup is intentionally convenient for a local machine, not hardened for shared or remote environments. Because it uses host networking and disables Jupyter authentication, do not expose it beyond a trusted local system without changing the Jupyter configuration and container runtime settings.
