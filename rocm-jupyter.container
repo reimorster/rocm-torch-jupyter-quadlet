@@ -1,0 +1,38 @@
+# ~/.config/containers/systemd/rocm-jupyter.container
+# Quadlet unit for Podman (user-level). For system-wide, place in /etc/containers/systemd/
+
+[Unit]
+Description=ROCm PyTorch + JupyterLab
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=localhost/rocm-pytorch-jupyter:latest
+ContainerName=rocm-jupyter
+
+# --- Runtime parity with your docker/podman run ---
+Network=host
+AddDevice=/dev/kfd
+AddDevice=/dev/dri
+GroupAdd=video
+AddCapability=SYS_PTRACE
+#ShmSize=8g
+PodmanArgs=--ipc=host --security-opt=seccomp=unconfined
+
+# --- Workspace ---
+Volume=/home/reimor/workspace:/workspace
+WorkingDir=/workspace
+
+# --- Environment (optional tuning) ---
+Environment=PYTHONUNBUFFERED=1
+Environment=HSA_OVERRIDE_GFX_VERSION=11.0.0
+
+# --- Command ---
+Exec=jupyter lab
+
+# --- Restart policy ---
+[Service]
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
